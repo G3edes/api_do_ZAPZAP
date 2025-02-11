@@ -2,12 +2,13 @@ const todoscontatos=require('./contatos')
 
 const getdadospessoais=function(numero){
     let pessoal=[]
+    let objJson = {}
     let telefone= String(numero)
     let status=false
     console.log(telefone)
     todoscontatos.contatos.whatsUsers.forEach(function(item){
         if (String(item.number)==telefone) {
-            pessoal.push=({
+            pessoal.push({
                 id:item.id,
                 account:item.account,
                 createdsince:item["created-since"],
@@ -16,12 +17,15 @@ const getdadospessoais=function(numero){
             status=true
         }
     })
+
+    objJson.dados = pessoal
     if (status==true) {
-        return pessoal
+        return objJson
     }else{
         return status
     }
 }
+
 const getdadosmutaveis=function(numero){
     let profile=[]
     let telefone= String(numero)

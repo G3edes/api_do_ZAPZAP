@@ -40,7 +40,6 @@ app.get('/v1/whatsapp/pessoal/:number', cors(), async function (request, respons
     let numero = request.params.number
 
     let contato = funcoes.getdadospessoais(numero)
-
     //resposta da api com o json e o status code (dados se tiver conteúdo)
     if(contato){
         response.status(200)
@@ -56,23 +55,7 @@ app.get('/v1/whatsapp/mutavel/:number', cors(), async function (request, respons
     let numero = request.params.number
 
     let contato = funcoes.getdadosmutaveis(numero)
-
-    //resposta da api com o json e o status code (dados se tiver conteúdo)
-    if(contato){
-        response.status(200)
-        response.json(contato)
-    }else{
-        response.status(404)
-        response.json({'status': 404, 'message': 'Não foi encontrado o numero'})
-    }
-
-})
-app.get('/v1/whatsapp/mutavel/:number', cors(), async function (request, response){
-
-    let numero = request.params.number
-
-    let contato = funcoes.getdadosmutaveis(numero)
-
+    console.log(contato)
     //resposta da api com o json e o status code (dados se tiver conteúdo)
     if(contato){
         response.status(200)
@@ -88,6 +71,22 @@ app.get('/v1/whatsapp/contatos/:number', cors(), async function (request, respon
     let numero = request.params.number
 
     let contato = funcoes.getdadoscontatos(numero)
+
+    //resposta da api com o json e o status code (dados se tiver conteúdo)
+    if(contato){
+        response.status(200)
+        response.json(contato)
+    }else{
+        response.status(404)
+        response.json({'status': 404, 'message': 'Não foi encontrado o numero'})
+    }
+
+})
+app.get('/v1/whatsapp/conversas/:number', cors(), async function (request, response){
+
+    let numero = request.params.number
+
+    let contato = funcoes.getdadosconversas(numero)
 
     //resposta da api com o json e o status code (dados se tiver conteúdo)
     if(contato){
