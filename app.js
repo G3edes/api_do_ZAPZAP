@@ -32,71 +32,99 @@ app.use((request, response, next)=>{
     next()
 })
 
-const funcoes = require('./modulo/funcoes.js')
+const whatsUsers = require("./modulo/funcoes")
 
-//criando endpoint para retornar todos os estados
-app.get('/v1/whatsapp/pessoal/:number', cors(), async function (request, response){
+//1
+app.get('/v1/whatsapp/conversas/:numero', cors(), async function(request, response){
 
-    let numero = request.params.number
+    let receberDados = request.params.numero
+    let dadosPessoais = whatsUsers.getdadospessoais(receberDados)
 
-    let contato = funcoes.getdadospessoais(numero)
-    //resposta da api com o json e o status code (dados se tiver conteúdo)
-    if(contato){
+    if(dadosPessoais){
         response.status(200)
-        response.json(contato)
+        response.json(dadosPessoais)
     }else{
         response.status(404)
-        response.json({'status': 404, 'message': 'Não foi encontrado o numero'})
+        response.json({'status': 404, 'message': 'Não foi encontrado um perfil'})
     }
-
 })
-app.get('/v1/whatsapp/mutavel/:number', cors(), async function (request, response){
 
-    let numero = request.params.number
+//2
+app.get('/v1/whatsapp/perfil/:numero', cors(), async function(request, response) {
 
-    let contato = funcoes.getdadosmutaveis(numero)
-    console.log(contato)
-    //resposta da api com o json e o status code (dados se tiver conteúdo)
-    if(contato){
+    let receberDados = request.params.numero
+    let dadosPessoais = whatsUsers.getdadosmutaveis(receberDados)
+
+    if(dadosPessoais){
         response.status(200)
-        response.json(contato)
+        response.json(dadosPessoais)
     }else{
         response.status(404)
-        response.json({'status': 404, 'message': 'Não foi encontrado o numero'})
+        response.json({'status': 404, 'message': 'Não foi encontrado um perfil'})
     }
-
 })
-app.get('/v1/whatsapp/contatos/:number', cors(), async function (request, response){
 
-    let numero = request.params.number
+//3
+app.get('/v1/whatsapp/contatos/:numero', cors(), async function(request, response) {
 
-    let contato = funcoes.getdadoscontatos(numero)
+    let receberDados = request.params.numero
+    let dadosPessoais = whatsUsers.getdadoscontatos(receberDados)
 
-    //resposta da api com o json e o status code (dados se tiver conteúdo)
-    if(contato){
+    if(dadosPessoais){
         response.status(200)
-        response.json(contato)
+        response.json(dadosPessoais)
     }else{
         response.status(404)
-        response.json({'status': 404, 'message': 'Não foi encontrado o numero'})
+        response.json({'status': 404, 'message': 'Não foi encontrado um contato'})
     }
-
 })
-app.get('/v1/whatsapp/conversas/:number', cors(), async function (request, response){
 
-    let numero = request.params.number
+//4
+app.get('/v1/whatsapp/conversas/:numero', cors(), async function(request, response) {
 
-    let contato = funcoes.getdadosconversas(numero)
+    let receberDados = request.params.numero
+    let dadosPessoais = whatsUsers.getdadosconversas(receberDados)
 
-    //resposta da api com o json e o status code (dados se tiver conteúdo)
-    if(contato){
+    if(dadosPessoais){
         response.status(200)
-        response.json(contato)
+        response.json(dadosPessoais)
     }else{
         response.status(404)
-        response.json({'status': 404, 'message': 'Não foi encontrado o numero'})
+        response.json({'status': 404, 'message': 'Não foi encontrado um contato'})
     }
+})
 
+//5
+app.get('/v1/whatsapp/conversas/', cors(), async function(request, response) {
+
+    let numero = request.query.numero
+    let contato = request.query.contato
+    let dadosPessoais = whatsUsers.getusuariocontato(numero, contato)
+
+    if(dadosPessoais){
+        response.status(200)
+        response.json(dadosPessoais)
+    }else{
+        response.status(404)
+        response.json({'status': 404, 'message': 'Não foi encontrado um contato'})
+    }
+})
+
+//6
+app.get('/v1/whatsapp/conversas/palavra-chave/?', cors(), async function(request, response) {
+
+    let numero = request.query.numero
+    let palavra = request.query.palavra
+    let contato = request.query.contato
+    let dadosPessoais = whatsUsers.getpalavrachave(numero, palavra, contato)
+
+    if(dadosPessoais){
+        response.status(200)
+        response.json(dadosPessoais)
+    }else{
+        response.status(404)
+        response.json({'status': 404, 'message': 'Não foi encontrado uma conversa'})
+    }
 })
 
 
