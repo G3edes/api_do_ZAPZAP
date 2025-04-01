@@ -1,44 +1,37 @@
-/*******************************************
- * Objetivo: 
- * Data:04/02/2025
- * Autor:Gabriel Silva Guedes
- * Versão:1.0
- *******************************************/
-
+//Importando Bibliotecas Instaladas
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
+// const {request} = require ('http')
 
-//INICIA A UTILIZACAO DO EXPRESS
-const app= express()
+//Inicia a utilização do express
+const app = express ()
+app.use(cors()); 
 
-app.use((request, response, next)=>{
-    //Permissao de onde virao a requisicao na API
-    //('*')-Fica liberado para qualquer maquina
-    //('ip')-restringe para uma maquina
+//configuração do header -> quem poderá requisitar a API
+app.use((request, response, next) =>{
+    //Permissão de onde virão as requisições na API
+    /*Acces... -> Origem da API*/  
+    /* ,'' -> Quem pode acessar (IP, ou * -> todos)*/
     response.header('Access-Control-Allow-Origin', '*')
+    
     //Permissão de quais metodos a API irá responder
+    /* METODOS -> GET - Pegar dados da API || POST - Salvar dados na API || PUT - Alterar um dado API || DELETE = Deletar um dado na API */
+    response.header('Access-Control-Allow-Methods', 'GET') 
 
-    /******Metodo do HTTP*********\
-    |> get - pegar dados da api   |
-    |> post- inserir dados na api |
-    |> put- alterar algo na api   |
-    |> delete- deletar algo na api|
-    \*****************************/
-
-    response.header('Access-Control-Allow-Methods','GET')
-    //Aplica as restricoes para o CORS da requisicao
+    //Aplica as restrições no CORS da requisição
     app.use(cors())
+
     next()
 })
 
-const whatsUsers = require("./modulo/funcoes")
+const whatsUsers = require("./module/funcoes")
 
 //1
 app.get('/v1/whatsapp/conversas/:numero', cors(), async function(request, response){
 
     let receberDados = request.params.numero
-    let dadosPessoais = whatsUsers.getdadospessoais(receberDados)
+    let dadosPessoais = whatsUsers.getDadosPessoais(receberDados)
 
     if(dadosPessoais){
         response.status(200)
@@ -53,7 +46,7 @@ app.get('/v1/whatsapp/conversas/:numero', cors(), async function(request, respon
 app.get('/v1/whatsapp/perfil/:numero', cors(), async function(request, response) {
 
     let receberDados = request.params.numero
-    let dadosPessoais = whatsUsers.getdadosmutaveis(receberDados)
+    let dadosPessoais = whatsUsers.getDadosPerfil(receberDados)
 
     if(dadosPessoais){
         response.status(200)
@@ -68,7 +61,7 @@ app.get('/v1/whatsapp/perfil/:numero', cors(), async function(request, response)
 app.get('/v1/whatsapp/contatos/:numero', cors(), async function(request, response) {
 
     let receberDados = request.params.numero
-    let dadosPessoais = whatsUsers.getdadoscontatos(receberDados)
+    let dadosPessoais = whatsUsers.getDadosContatos(receberDados)
 
     if(dadosPessoais){
         response.status(200)
@@ -80,10 +73,9 @@ app.get('/v1/whatsapp/contatos/:numero', cors(), async function(request, respons
 })
 
 //4
-app.get('/v1/whatsapp/conversas/:numero', cors(), async function(request, response) {
-
-    let receberDados = request.params.numero
-    let dadosPessoais = whatsUsers.getdadosconversas(receberDados)
+app.get('/v1/whatsapp/conversas/', cors(), async function(request, response) {
+    let numero = request.query.numero
+    let dadosPessoais = whatsUsers.getConversasContatos(numero)
 
     if(dadosPessoais){
         response.status(200)
@@ -99,7 +91,7 @@ app.get('/v1/whatsapp/conversas/', cors(), async function(request, response) {
 
     let numero = request.query.numero
     let contato = request.query.contato
-    let dadosPessoais = whatsUsers.getusuariocontato(numero, contato)
+    let dadosPessoais = whatsUsers.getListarConversas(numero, contato)
 
     if(dadosPessoais){
         response.status(200)
@@ -111,12 +103,12 @@ app.get('/v1/whatsapp/conversas/', cors(), async function(request, response) {
 })
 
 //6
-app.get('/v1/whatsapp/conversas/palavra-chave/?', cors(), async function(request, response) {
+app.get('/v1/whatsapp/conversas/palavra-chave/', cors(), async function(request, response) {
 
     let numero = request.query.numero
     let palavra = request.query.palavra
     let contato = request.query.contato
-    let dadosPessoais = whatsUsers.getpalavrachave(numero, palavra, contato)
+    let dadosPessoais = getFiltrarPalavra(numero, palavra, contato)
 
     if(dadosPessoais){
         response.status(200)
@@ -127,9 +119,6 @@ app.get('/v1/whatsapp/conversas/palavra-chave/?', cors(), async function(request
     }
 })
 
-
-const part=process.env.PORT || 8080
-//configurando a porta que a api vai rodar, executa a api e faz com que fique aguardando novas aquisições
-app.listen(part, function(){
-    console.log('API funcionando e aguardando requisições..')
+app.listen('8080', function(){
+    console.log('API funcionando...')
 })
